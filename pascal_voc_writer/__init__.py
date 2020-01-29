@@ -4,7 +4,9 @@ from jinja2 import Environment, PackageLoader
 
 class Writer:
     def __init__(self, path, width, height, depth=3, database='Unknown', segmented=0):
-        environment = Environment(loader=PackageLoader('pascal_voc_writer', 'templates'), keep_trailing_newline=True)
+        environment = Environment(loader=PackageLoader('pascal_voc_writer', 'templates'), 
+            # autoescape=select_autoescape(['html', 'xml']),
+            keep_trailing_newline=True)
         self.annotation_template = environment.get_template('annotation.xml')
 
         abspath = os.path.abspath(path)
@@ -43,16 +45,7 @@ import cv2
 import os
 import csv
 
-def parse_yolo_labels(images_list_file_name=None, VocLabelsDirReplace=True, classes=['background',
-                                                                                     'aeroplane', 'bicycle', 'bird',
-                                                                                     'boat',
-                                                                                     'bottle', 'bus', 'car', 'cat',
-                                                                                     'chair', 'cow', 'diningtable',
-                                                                                     'dog',
-                                                                                     'horse', 'motorbike', 'person',
-                                                                                     'pottedplant',
-                                                                                     'sheep', 'sofa', 'train',
-                                                                                     'tvmonitor'],
+def parse_yolo_labels(images_list_file_name=None, VocLabelsDirReplace=True, classes=['bird'],
                       ret=False):
     '''
     Arguments:
@@ -87,12 +80,12 @@ def parse_yolo_labels(images_list_file_name=None, VocLabelsDirReplace=True, clas
             #create voc writer
             writer = Writer(imageFile, width=width, height=height)
 
-            # self.filenames.append(imageFile)  only add a file if there are labesl
+            # self.filenames.append(imageFile)  only add a file if there are labels
             current_labels = []
-            labelFile = imageFile.replace('jpg', 'txt')
-            xmlFile = imageFile.replace('jpg', 'xml')
+            labelFile = imageFile.replace('png', 'txt')
+            xmlFile = imageFile.replace('png', 'xml')
             if VocLabelsDirReplace:
-                labelFile = labelFile.replace('JPEGImages', 'labels')
+                labelFile = labelFile.replace('images', 'labels')
 
             with open(labelFile) as csvfile:
                 readCSV = csv.reader(csvfile, delimiter=' ')
@@ -134,8 +127,9 @@ def parse_yolo_labels(images_list_file_name=None, VocLabelsDirReplace=True, clas
 #            'horse', 'motorbike', 'person', 'pottedplant',
 #            'sheep', 'sofa', 'train', 'tvmonitor']
 
-classes = ['background',
-            'person', 'animal','vehicle']
+classes = ['background','barcode']
 #  "D:\\YOLO\\Training\\base\\data\\themalInValid.txt"
-trainFiles = "C:/Yolo/DataSets/3classes/Marana/voc/2012/1/all_2012.txt"
-parse_yolo_labels(images_list_file_name=trainFiles,classes=classes)
+trainFiles = "/Users/brenna/Desktop/Insight/corvus_nn_data/samples/list.txt"
+parse_yolo_labels(images_list_file_name=trainFiles,classes=classes,VocLabelsDirReplace=True)
+
+
